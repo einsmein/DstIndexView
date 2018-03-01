@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+	<title>Echarts demo</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="{{url_for('static',filename='echarts.js') }}"></script>
+    <!-- <script src="echarts.js"></script> -->
+</head>
+<body>
+	 <!-- prepare a DOM container with width and height -->
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <div id="test"></div>
+    <script type="text/javascript">
+    	$(document).ready(function(){
+	        $.getJSON('realdata', function (data, status) {
+	        	// $("#test").html("data");
+	        	$("#test").html("Data: " + data + "\nStatus: " + status); 
+	        
+
+	        	// based on prepared DOM, initialize echarts instance
+		        var myChart = echarts.init(document.getElementById('main'));
+
+		        // specify chart configuration item and data
+		        var option = {
+		            title: {
+		                text: 'ECharts entry example'
+		            },
+		            tooltip: {},
+		            legend: {
+		                data:['Sales']
+		            },
+		            xAxis: {
+		                data: data.map(function(item){ return item[0]; })
+		            },
+		            yAxis: {},
+		            series: [{
+		                name: 'Sales',
+		                type: 'line',
+		                data: data.map(function(item){ return item[1]; })
+		            }]
+		        };
+
+		        // use configuration item and data specified to show chart
+		        myChart.setOption(option);	
+	        })
+    	})
+	</script>
+
+    		
+</body>
+
+</html>
