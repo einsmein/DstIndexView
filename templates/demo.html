@@ -4,19 +4,39 @@
 	<title>Echarts demo</title>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+	
 	<script src="{{url_for('static',filename='echarts.js') }}"></script>
+
     <!-- <script src="echarts.js"></script> -->
 </head>
 <body>
+	<div class="container">
+		<input id="datepicker" data-provide="datepicker">
+		<form action="/demo">
+			<input type="text" name="year">
+			<input type="text" name="month">
+			<input type="submit" value="Submit">
+		</form>
+	</div>
 	 <!-- prepare a DOM container with width and height -->
-    <div id="main" style="width: 600px;height:400px;"></div>
-    <div id="test"></div>
+	<!-- <div id="main" class=".col-md-12"></div> -->
+    <div id="main" style="position:fixed;width:100%;height:100%;"></div>
+    <div id="test" style=""></div>
+
+
     <script type="text/javascript">
     	$(document).ready(function(){
-	        $.getJSON('realdata', function (data, status) {
-	        	// $("#test").html("data");
-	        	$("#test").html("Data: " + data + "\nStatus: " + status); 
-	        
+    		$("#datepicker").datepicker({
+    			format:"mm-yyyy",
+    			startView: "month",
+    			minViewMode: "months"
+    		})
+
+	        $.getJSON('realdata/'+{{year_month}}, function (data, status) {
+	        	// $("#test").html("Data: " + data + "\nStatus: " + status);
 
 	        	// based on prepared DOM, initialize echarts instance
 		        var myChart = echarts.init(document.getElementById('main'));
@@ -26,16 +46,26 @@
 		            title: {
 		                text: 'ECharts entry example'
 		            },
-		            tooltip: {},
+		            tooltip: {
+		            	trigger: 'axis',
+		            	axisPointer: {
+		            		type: 'cross'
+		            	}
+		            },
 		            legend: {
-		                data:['Sales']
+		                data:['Dst index']
 		            },
 		            xAxis: {
 		                data: data.map(function(item){ return item[0]; })
 		            },
 		            yAxis: {},
+			        dataZoom: [{
+			            startValue: '{{start_date}}' //'2018-02-01'
+			        }, {
+			            type: 'inside'
+			        }],
 		            series: [{
-		                name: 'Sales',
+		                name: 'Dst index',
 		                type: 'line',
 		                data: data.map(function(item){ return item[1]; })
 		            }]
