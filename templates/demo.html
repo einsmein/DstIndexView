@@ -13,33 +13,30 @@
     <!-- <script src="echarts.js"></script> -->
 </head>
 <body>
-	<div class="container">
-		<input id="datepicker" data-provide="datepicker">
-		<form action="/demo">
-			<input type="text" name="year">
-			<input type="text" name="month">
-			<input type="submit" value="Submit">
-		</form>
-	</div>
-	 <!-- prepare a DOM container with width and height -->
-	<!-- <div id="main" class=".col-md-12"></div> -->
-    <div id="main" style="position:fixed;width:100%;height:100%;"></div>
+	<form action="/demo">
+		<input id="datepicker" type="text" class="form-control-inline" name="yearmonth">
+		<input type="submit" value="Submit">
+	</form>
+	
+	<!-- prepare a DOM container with width and height -->
+	<div id="dstchart" style="height:500px; width:800px"></div>
     <div id="test" style=""></div>
 
 
     <script type="text/javascript">
     	$(document).ready(function(){
+			var todayDate = 
     		$("#datepicker").datepicker({
-    			format:"mm-yyyy",
-    			startView: "month",
-    			minViewMode: "months"
-    		})
+    			format:"yyyymm",
+    			minViewMode: "months",
+    			endDate: "-1m"
+    		});
 
-	        $.getJSON('realdata/'+{{year_month}}, function (data, status) {
-	        	// $("#test").html("Data: " + data + "\nStatus: " + status);
+
+	        $.getJSON('realdata/' + {{year_month}}, function (data, status) {
 
 	        	// based on prepared DOM, initialize echarts instance
-		        var myChart = echarts.init(document.getElementById('main'));
+		        var myChart = echarts.init(document.getElementById('dstchart'));
 
 		        // specify chart configuration item and data
 		        var option = {
@@ -73,7 +70,7 @@
 
 		        // use configuration item and data specified to show chart
 		        myChart.setOption(option);	
-	        })
+		    })
     	})
 	</script>
 

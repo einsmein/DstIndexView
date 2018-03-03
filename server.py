@@ -10,9 +10,9 @@ def index():
 
 @app.route("/demo")
 def demo():
-	year = request.args.get('year')
-	month = request.args.get('month')
-	return render_template("demo.html", year_month = "{yyyy}{mm}".format(yyyy=year,mm=month), start_date="{yyyy}-{mm}-01".format(yyyy=year,mm=month))
+	yearmonth = request.args.get('yearmonth')
+	print(yearmonth)
+	return render_template("demo.html", year_month = yearmonth)#"{yyyy}{mm}".format(yyyy=year,mm=month), start_date="{yyyy}-{mm}-01".format(yyyy=year,mm=month))
 
 # @app.route("/data")
 # def get_data():
@@ -25,26 +25,29 @@ def demo():
 # 	)
 # 	return response
 
-# @app.route("/realdata")
-# def get_real_data_mock():
-# 	yearmonth = '1802'
-# 	url = "http://wdc.kugi.kyoto-u.ac.jp/dst_realtime/20{yymm}/dst{yymm}.for.request".format(yymm=yearmonth)
-# 	r = requests.get(url, allow_redirects=True)
-# 	hour_dst = format_month_dst(r.content)
-# 	# print(hour_dst)
+@app.route("/realdata")
+def get_real_data_mock():
+	yearmonth = '1802'
+	url = "http://wdc.kugi.kyoto-u.ac.jp/dst_realtime/20{yymm}/dst{yymm}.for.request".format(yymm=yearmonth)
+	r = requests.get(url, allow_redirects=True)
+	hour_dst = format_month_dst(r.content)
+	# print(hour_dst)
 
-# 	response = app.response_class(
-# 		response = json.dumps(hour_dst),
-# 		status = 200,
-# 		mimetype = 'application/json'
-# 	)
-# 	return response
+	response = app.response_class(
+		response = json.dumps(hour_dst),
+		status = 200,
+		mimetype = 'application/json'
+	)
+	return response
 
-@app.route('/realdata/<yearmonth>')
-def get_real_data(yearmonth):
+@app.route('/realdata/<year_month>')
+def get_real_data(year_month):
 	all_dst_index = []
-	yyyy = int(yearmonth[:4])
-	mm = int(yearmonth[4:])
+	yyyy = int(year_month[:4])
+	mm = int(year_month[4:])
+	print(yyyy, mm)
+	# yyyy = int(yearmonth[:4])
+	# mm = int(yearmonth[4:])
 	current_yyyy = datetime.now().year
 	current_mm = datetime.now().month - 1
 
