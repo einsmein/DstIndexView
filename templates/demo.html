@@ -7,7 +7,10 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
-	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+
 	<script src="{{url_for('static',filename='echarts.js') }}"></script>
 
     <!-- <script src="echarts.js"></script> -->
@@ -19,57 +22,96 @@
 	</form>
 	
 	<!-- prepare a DOM container with width and height -->
-	<div id="dstchart" style="height:500px; width:800px"></div>
+	<div class="container">
+		<canvas id="dst_hours" style="height:45vh; width:100%"></canvas>
+		<canvas id="dst_dates" style="height:45vh; width:100%"></canvas>
+	</div>
+		
+			<!-- <div id="dstchart" style="height:500px; width:800px"></div> -->
+	</div>
     <div id="test" style=""></div>
 
 
     <script type="text/javascript">
     	$(document).ready(function(){
-			var todayDate = 
     		$("#datepicker").datepicker({
     			format:"yyyymm",
     			minViewMode: "months",
     			endDate: "-1m"
     		});
 
+	        $.getJSON('hourly/' + {{year_month}}, function (data, status) {
+				var ctx = document.getElementById("dst_hours").getContext('2d');
+				var myChart = new Chart(ctx, {
+				    type: 'line',
+    				maintainAspectRatio: false,
+				    data: {
+				        labels: data.map(function(item){ return item[0]; }),
+				        datasets: [{
+				            label: '# of Votes',
+				            data: data.map(function(item){ return item[1]; }),
+				            lineTension: 0,
+				            borderColor: 'rgb(255, 99, 132)',
+				            pointRadius: 0,
+				            fill: false
+				        }]
+				    }	
+				});
 
-	        $.getJSON('realdata/' + {{year_month}}, function (data, status) {
+	        $.getJSON('average/' + {{year_month}}, function (data, status) {
+				var ctx = document.getElementById("dst_dates").getContext('2d');
+				var myChart = new Chart(ctx, {
+				    type: 'line',
+    				maintainAspectRatio: false,
+				    data: {
+				        labels: data.map(function(item){ return item[0]; }),
+				        datasets: [{
+				            label: '# of Votes',
+				            data: data.map(function(item){ return item[1]; }),
+				            lineTension: 0,
+				            borderColor: 'rgb(255, 99, 132)',
+				            pointRadius: 0,
+				            fill: false
+				        }]
+				    }	
+				});
+			});
 
 	        	// based on prepared DOM, initialize echarts instance
-		        var myChart = echarts.init(document.getElementById('dstchart'));
+		        // var myChart = echarts.init(document.getElementById('dstchart'));
 
-		        // specify chart configuration item and data
-		        var option = {
-		            title: {
-		                text: 'ECharts entry example'
-		            },
-		            tooltip: {
-		            	trigger: 'axis',
-		            	axisPointer: {
-		            		type: 'cross'
-		            	}
-		            },
-		            legend: {
-		                data:['Dst index']
-		            },
-		            xAxis: {
-		                data: data.map(function(item){ return item[0]; })
-		            },
-		            yAxis: {},
-			        dataZoom: [{
-			            startValue: '{{start_date}}' //'2018-02-01'
-			        }, {
-			            type: 'inside'
-			        }],
-		            series: [{
-		                name: 'Dst index',
-		                type: 'line',
-		                data: data.map(function(item){ return item[1]; })
-		            }]
-		        };
+		        // // specify chart configuration item and data
+		        // var option = {
+		        //     title: {
+		        //         text: 'ECharts entry example'
+		        //     },
+		        //     tooltip: {
+		        //     	trigger: 'axis',
+		        //     	axisPointer: {
+		        //     		type: 'cross'
+		        //     	}
+		        //     },
+		        //     legend: {
+		        //         data:['Dst index']
+		        //     },
+		        //     xAxis: {
+		        //         data: data.map(function(item){ return item[0]; })
+		        //     },
+		        //     yAxis: {},
+			       //  dataZoom: [{
+			       //      startValue: '{{start_date}}' //'2018-02-01'
+			       //  }, {
+			       //      type: 'inside'
+			       //  }],
+		        //     series: [{
+		        //         name: 'Dst index',
+		        //         type: 'line',
+		        //         data: data.map(function(item){ return item[1]; })
+		        //     }]
+		        // };
 
-		        // use configuration item and data specified to show chart
-		        myChart.setOption(option);	
+		        // // use configuration item and data specified to show chart
+		        // myChart.setOption(option);	
 		    })
     	})
 	</script>
