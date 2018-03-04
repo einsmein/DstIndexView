@@ -7,7 +7,16 @@ client: jquery, chartjs, bootstrap
 
 ### Quick run
 Install flask and requests using pip then run the server
- `pip install flask`
- `pip install requests` 
- `python server.py`
+
+ ```
+ pip install flask
+ pip install requests
+ python server.py
+ ```
+ 
 The page is on localhost:5000, select the initial month and submit. Data shown is from selected month up to present
+
+##### To-do 
+- Add script to install dependencies and run server
+- Add monthly average graph
+- Revisit echarts (datazoom, responsive screen size)
