@@ -22,8 +22,6 @@ def get_dst(year_month, flag=IndexType.HOUR_ALL):
 			["yyyy/mm/dd", dst_index] if flag = DstFlag.DAY_AVG
 	"""
 
-
-
 	result = []
 	yyyy = int(year_month[:4])
 	mm = int(year_month[4:])

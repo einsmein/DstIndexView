@@ -1,7 +1,6 @@
 from flask import Flask, render_template, json, request
 import requests
 import dstDataHandler as source
-from cache import Cache
 from datetime import datetime
 app = Flask(__name__)
 
@@ -67,7 +66,4 @@ def get_avg_data(year_month):
 	return response
 
 if __name__ == "__main__":
-	run()
-
-def run():
 	app.run()
