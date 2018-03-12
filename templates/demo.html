@@ -16,19 +16,17 @@
     <!-- <script src="echarts.js"></script> -->
 </head>
 <body>
-	<form action="/demo">
-		<input id="datepicker" type="text" class="form-control-inline" name="yearmonth">
-		<input type="submit" value="Submit">
-	</form>
 	
 	<!-- prepare a DOM container with width and height -->
-	<div class="container">
-		<canvas id="dst_hours" style="height:45vh; width:100%"></canvas>
-		<canvas id="dst_dates" style="height:45vh; width:100%"></canvas>
+	<div>
+		<form action="/demo">
+			<input id="datepicker" type="text" class="form-control-inline" name="yearmonth">
+			<input type="submit" value="Submit">
+		</form>
 	</div>
 		
-			<!-- <div id="dstchart" style="height:500px; width:800px"></div> -->
-	</div>
+	<div id="dst_hours" style="height:350px; width:1200px"></div>
+	<div id="dst_dates" style="height:350px; width:1200px"></div>
     <div id="test" style=""></div>
 
 
@@ -41,79 +39,102 @@
     		});
 
 	        $.getJSON('hourly/' + {{year_month}}, function (data, status) {
-				var ctx = document.getElementById("dst_hours").getContext('2d');
-				var myChart = new Chart(ctx, {
-				    type: 'line',
-    				maintainAspectRatio: false,
-				    data: {
-				        labels: data.map(function(item){ return item[0]; }),
-				        datasets: [{
-				            label: '# of Votes',
-				            data: data.map(function(item){ return item[1]; }),
-				            lineTension: 0,
-				            borderColor: 'rgb(255, 99, 132)',
-				            pointRadius: 0,
-				            fill: false
-				        }]
-				    }	
-				});
+	        	// based on prepared DOM, initialize echarts instance
+		        var myChart = echarts.init(document.getElementById('dst_hours'));
 
-	        $.getJSON('average/' + {{year_month}}, function (data, status) {
-				var ctx = document.getElementById("dst_dates").getContext('2d');
-				var myChart = new Chart(ctx, {
-				    type: 'line',
-    				maintainAspectRatio: false,
-				    data: {
-				        labels: data.map(function(item){ return item[0]; }),
-				        datasets: [{
-				            label: '# of Votes',
-				            data: data.map(function(item){ return item[1]; }),
-				            lineTension: 0,
-				            borderColor: 'rgb(255, 99, 132)',
-				            pointRadius: 0,
-				            fill: false
-				        }]
-				    }	
-				});
+		        // specify chart configuration item and data
+		        var option = {
+		            title: {
+		                text: 'ECharts entry example'
+		            },
+		            tooltip: {
+		            	trigger: 'axis',
+		            	axisPointer: {
+		            		type: 'cross'
+		            	}
+		            },
+		            legend: {
+		                data:['Dst index']
+		            },
+		            xAxis: {
+		                data: data.map(function(item){ return item[0]; })
+		            },
+		            yAxis: {},
+			        dataZoom: [{
+			            startValue: '{{start_date}}' //'2018-02-01'
+			        }, {
+			            type: 'inside'
+			        }],
+		            series: [{
+		                name: 'Dst index',
+		                type: 'line',
+		                data: data.map(function(item){ return item[1]; })
+		            }]
+		        };
+
+		        // use configuration item and data specified to show chart
+		        myChart.setOption(option);	
 			});
 
+	        $.getJSON('dailyaverage/' + {{year_month}}, function (data, status) {
+
 	        	// based on prepared DOM, initialize echarts instance
-		        // var myChart = echarts.init(document.getElementById('dstchart'));
+		        var myChart = echarts.init(document.getElementById('dst_dates'));
 
-		        // // specify chart configuration item and data
-		        // var option = {
-		        //     title: {
-		        //         text: 'ECharts entry example'
-		        //     },
-		        //     tooltip: {
-		        //     	trigger: 'axis',
-		        //     	axisPointer: {
-		        //     		type: 'cross'
-		        //     	}
-		        //     },
-		        //     legend: {
-		        //         data:['Dst index']
-		        //     },
-		        //     xAxis: {
-		        //         data: data.map(function(item){ return item[0]; })
-		        //     },
-		        //     yAxis: {},
-			       //  dataZoom: [{
-			       //      startValue: '{{start_date}}' //'2018-02-01'
-			       //  }, {
-			       //      type: 'inside'
-			       //  }],
-		        //     series: [{
-		        //         name: 'Dst index',
-		        //         type: 'line',
-		        //         data: data.map(function(item){ return item[1]; })
-		        //     }]
-		        // };
+		        // specify chart configuration item and data
+		        var option = {
+		            title: {
+		                text: 'ECharts entry example'
+		            },
+		            tooltip: {
+		            	trigger: 'axis',
+		            	axisPointer: {
+		            		type: 'cross'
+		            	}
+		            },
+		            legend: {
+		                data:['Dst index']
+		            },
+		            xAxis: {
+		                data: data.map(function(item){ return item[0]; })
+		            },
+		            yAxis: {},
+			        dataZoom: [{
+			            startValue: '{{start_date}}' //'2018-02-01'
+			        }, {
+			            type: 'inside'
+			        }],
+		            series: [{
+		                name: 'Dst index',
+		                type: 'line',
+		                data: data.map(function(item){ return item[1]; })
+		            }]
+		        };
 
-		        // // use configuration item and data specified to show chart
-		        // myChart.setOption(option);	
+		        // use configuration item and data specified to show chart
+		        myChart.setOption(option);	
+
+				// var ctx = document.getElementById("dst_dates").getContext('2d');
+				// var myChart = new Chart(ctx, {
+				//     type: 'line',
+    // 				maintainAspectRatio: false,
+				//     data: {
+				//         labels: data.map(function(item){ return item[0]; }),
+				//         datasets: [{
+				//             label: '# of Votes',
+				//             data: data.map(function(item){ return item[1]; }),
+				//             lineTension: 0,
+				//             borderColor: 'rgb(255, 99, 132)',
+				//             pointRadius: 0,
+				//             fill: false
+				//         }]
+				//     }	
+				// });
+			});
+
+	        	
 		    })
-    	})
+    	
 	</script>
 
     		
