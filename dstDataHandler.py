@@ -21,9 +21,8 @@ def get_dst(year_month, flag=IndexType.HOUR_ALL):
 			["yyyy/mm/dd h", dst_index] if flag = DstFlag.HOUR_ALL
 			["yyyy/mm/dd", dst_index] if flag = DstFlag.DAY_AVG
 	"""
-	get_day_avg = False
-	if flag == IndexType.DAY_AVG:
-		get_day_avg = True
+
+
 
 	result = []
 	yyyy = int(year_month[:4])
@@ -38,7 +37,7 @@ def get_dst(year_month, flag=IndexType.HOUR_ALL):
 		url = "http://wdc.kugi.kyoto-u.ac.jp/dst_realtime/{yy0}{yy1}{mm}/dst{yy1}{mm}.for.request".format(yy0=str(ym)[:2],yy1=str(ym)[2:4],mm=str(ym)[4:6])
 		print("url: " + url)
 		r = requests.get(url, allow_redirects=True)
-		result.extend(format_month_dst(r.content, get_day_avg))
+		result.extend(format_month_dst(r.content, flag))
 
 		if ym % 100 == 12:
 			ym += 100 - 11
@@ -46,7 +45,7 @@ def get_dst(year_month, flag=IndexType.HOUR_ALL):
 			ym += 1
 	return result
 
-def format_month_dst(month_dst_raw, get_day_avg=False):
+def format_month_dst(month_dst_raw, flag=IndexType.HOUR_ALL):
 	"""
 	Format data from a dst index file. File example can be found at dst_sample.txt
 	"""
@@ -62,22 +61,22 @@ def format_month_dst(month_dst_raw, get_day_avg=False):
 		 day_dst_raw)
 	# [['DST1802*01RRX020', '0', '5', '3', ...], [...]]
 	hour_dst = []
-	map(lambda row: hour_dst.extend(map_hour_dst(row, get_day_avg)), day_dst_split)
+	map(lambda row: hour_dst.extend(map_hour_dst(row, flag)), day_dst_split)
 	# ['2018/02/01 1', 3]
 	return hour_dst
 
-def map_hour_dst(row, get_day_avg=False):
+def map_hour_dst(row, flag):
 	"""
 	Row is expected in the format ['DST1802*01RRX020', '0', '5', '3', ...]
 	"""
 	all_dst = []
-	if not get_day_avg:
+	if flag == IndexType.HOUR_ALL:
 		for i in range(24):
 			date = "{yy0}{yy1}/{mm}/{dd} {h}".format(yy0=row[0][14:16], yy1=row[0][3:5], mm=row[0][5:7], dd=row[0][8:10], h=i)
 			dst = int(row[i+1])
 			all_dst.append([date, dst])
 		return all_dst
-	else:
+	elif flag == IndexType.DAY_AVG:
 		date = "{yy0}{yy1}/{mm}/{dd}".format(yy0=row[0][14:16], yy1=row[0][3:5], mm=row[0][5:7], dd=row[0][8:10])
 		dst = int(row[24])
 		all_dst.append([date, dst])

@@ -1,2 +1,3 @@
 github_page/
 *.pyc
+cache.py
