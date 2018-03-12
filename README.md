@@ -29,6 +29,6 @@ client: jquery, echarts, bootstrap
  
 
 ##### To-do 
-- Add script to install dependencies and run server
-- Add monthly average graph
-- Revisit echarts (datazoom, responsive screen size)
+[x] Add script to install dependencies and run server
+[x] Add monthly average graph
+[x] Revisit echarts (datazoom, responsive screen size)
