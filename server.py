@@ -65,5 +65,8 @@ def get_avg_data(year_month):
 	)
 	return response
 
-if __name__ == "__main__":
+def run():
 	app.run()
+	
+if __name__ == "__main__":
+	run()

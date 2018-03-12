@@ -9,7 +9,8 @@ Clone this repository and execute (pip is required)
  python run.py
  ```
 The script installs necessary modules and run the server which can be access on localhost:5000.
-Select the starting month of the period and submit.
+
+To use the application, go to `localhost:5000/demo` and select the starting month of the period, then click submit.
 The first graph shows Dst index of every hour from selected month up to present, while the second graph shows average index per day for the same period.
 
 If you have a problem running run.py script, manually install the packages and run the server
